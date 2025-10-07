@@ -1,12 +1,15 @@
 services:
   - type: web
     name: cycle-tracker-bot
-    env: node
+    env: docker
     plan: free
-    buildCommand: npm install
-    startCommand: node src/index.js
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
       - key: DATABASE_PATH
         value: /opt/render/project/src/data/bot.db
+      - key: TIMEZONE
+        value: Europe/Moscow
+      - key: NOTIFICATION_TIME
+        value: "09:00"

@@ -36,11 +36,9 @@ git push -u origin main
 
 ### 4. ⚙️ Настройте сервис
 - **Name**: `telegram-cycle-bot`
-- **Environment**: `Node`
+- **Environment**: `Docker`
 - **Branch**: `main`
-- **Root Directory**: оставьте пустым
-- **Build Command**: `npm install`
-- **Start Command**: `node src/index.js`
+- **Dockerfile Path**: `./Dockerfile`
 
 ### 5. 🔑 Добавьте переменные окружения
 В разделе **"Environment Variables"**:
