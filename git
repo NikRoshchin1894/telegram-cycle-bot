@@ -1,2 +1,2 @@
-git remote add origin https://github.com/NikRoshchin1894/telegram-cycle-bot.git
+git remote add origin https://github.com/NikRoshchin1894/telegram-cycle-bot
 git push -u origin main
