@@ -1,0 +1,28 @@
+{
+  "name": "cycle-tracker-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for women's cycle tracking with daily recommendations",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "setup": "node scripts/setup.js"
+  },
+  "keywords": ["telegram", "bot", "cycle", "women", "health"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.66.0",
+    "openai": "^4.20.1",
+    "sqlite3": "^5.1.6",
+    "node-cron": "^3.0.3",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
