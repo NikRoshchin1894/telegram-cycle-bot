@@ -235,10 +235,18 @@ bot.onText(/\/start/, async (msg) => {
 💡 Используйте кнопки ниже или команды для управления циклом.
 `;
 
-    await bot.sendMessage(chatId, welcomeMessage, { 
-      reply_markup: mainKeyboard.reply_markup,
-      parse_mode: 'Markdown'
-    });
+    try {
+      await bot.sendMessage(chatId, welcomeMessage, { 
+        reply_markup: mainKeyboard.reply_markup,
+        parse_mode: 'Markdown'
+      });
+      
+      // Обновляем время последней активности пользователя
+      await database.updateUser(chatId, existingUser.lastCycleDate);
+      
+    } catch (error) {
+      console.log(`Ошибка при отправке сообщения пользователю ${chatId}:`, error.message);
+    }
   } else {
     // Если новый пользователь, показываем приветствие и выбор даты
     const welcomeMessage = `
@@ -807,7 +815,7 @@ bot.onText(/^(?!\/)(?!📊|🔄).*$/, async (msg) => {
     const phase = cycleTracker.getCyclePhase(cycleDay);
     
     const restoreMessage = `
-🤖 Клавиатура восстановлена!
+🤖 Добро пожаловать обратно!
 
 📊 Ваш текущий цикл:
 • День цикла: ${cycleDay} из 28
@@ -817,10 +825,18 @@ bot.onText(/^(?!\/)(?!📊|🔄).*$/, async (msg) => {
 💡 Используйте кнопки ниже для управления циклом.
 `;
 
-    await bot.sendMessage(chatId, restoreMessage, { 
-      reply_markup: mainKeyboard.reply_markup,
-      parse_mode: 'Markdown'
-    });
+    try {
+      await bot.sendMessage(chatId, restoreMessage, { 
+        reply_markup: mainKeyboard.reply_markup,
+        parse_mode: 'Markdown'
+      });
+      
+      // Обновляем время последней активности пользователя
+      await database.updateUser(chatId, user.lastCycleDate);
+      
+    } catch (error) {
+      console.log(`Ошибка при восстановлении клавиатуры для пользователя ${chatId}:`, error.message);
+    }
     return;
   }
 
@@ -998,19 +1014,29 @@ async function restoreKeyboardsForExistingUsers() {
 💡 Используйте кнопки ниже для управления циклом.
 `;
 
+    let successCount = 0;
+    let blockedCount = 0;
+
     for (const user of users) {
       try {
         await bot.sendMessage(user.chatId, restoreMessage, { 
           parse_mode: 'Markdown',
           reply_markup: mainKeyboard.reply_markup
         });
+        successCount++;
       } catch (error) {
-        console.log(`Не удалось восстановить клавиатуру для пользователя ${user.chatId}:`, error.message);
+        if (error.response && error.response.body && error.response.body.description === 'bot was blocked by the user') {
+          console.log(`Пользователь ${user.chatId} заблокировал бота`);
+          blockedCount++;
+        } else {
+          console.log(`Не удалось восстановить клавиатуру для пользователя ${user.chatId}:`, error.message);
+        }
       }
     }
     
-    if (users.length > 0) {
-      console.log(`✅ Клавиатуры восстановлены для ${users.length} пользователей`);
+    console.log(`✅ Клавиатуры восстановлены для ${successCount} пользователей`);
+    if (blockedCount > 0) {
+      console.log(`⚠️ ${blockedCount} пользователей заблокировали бота`);
     }
   } catch (error) {
     console.error('❌ Ошибка при восстановлении клавиатур:', error);
@@ -1112,6 +1138,9 @@ async function gracefulShutdown() {
 Приносим извинения за временные неудобства! 🙏
 `;
 
+      let successCount = 0;
+      let blockedCount = 0;
+
       for (const user of users) {
         try {
           // Отправляем сообщение без кастомной клавиатуры
@@ -1125,12 +1154,21 @@ async function gracefulShutdown() {
               remove_keyboard: true
             }
           });
+          successCount++;
         } catch (error) {
-          console.log(`Не удалось уведомить пользователя ${user.chatId}:`, error.message);
+          if (error.response && error.response.body && error.response.body.description === 'bot was blocked by the user') {
+            console.log(`Пользователь ${user.chatId} заблокировал бота`);
+            blockedCount++;
+          } else {
+            console.log(`Не удалось уведомить пользователя ${user.chatId}:`, error.message);
+          }
         }
       }
 
-      console.log(`✅ Уведомления отправлены ${users.length} пользователям`);
+      console.log(`✅ Уведомления отправлены ${successCount} пользователям`);
+      if (blockedCount > 0) {
+        console.log(`⚠️ ${blockedCount} пользователей заблокировали бота`);
+      }
     } catch (error) {
       console.error('❌ Ошибка при уведомлении пользователей:', error);
     }
