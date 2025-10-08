@@ -1,6 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 import cron from 'node-cron';
 import dotenv from 'dotenv';
+import express from 'express';
 import { Database } from './database.js';
 import { ChatGptService } from './chatgpt.js';
 import { CycleTracker } from './cycleTracker.js';
@@ -1049,7 +1050,6 @@ async function startBot() {
 }
 
 // Добавляем простой веб-сервер для Render
-const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
