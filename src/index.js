@@ -1048,6 +1048,25 @@ async function startBot() {
   }
 }
 
+// Добавляем простой веб-сервер для Render
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Простой health check endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    service: 'Telegram Cycle Tracker Bot',
+    uptime: process.uptime()
+  });
+});
+
+// Запускаем веб-сервер
+app.listen(port, () => {
+  console.log(`🌐 Веб-сервер запущен на порту ${port}`);
+});
+
 // Запускаем бота
 startBot();
 

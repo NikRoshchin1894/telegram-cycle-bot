@@ -9,15 +9,22 @@
     "dev": "nodemon src/index.js",
     "setup": "node scripts/setup.js"
   },
-  "keywords": ["telegram", "bot", "cycle", "women", "health"],
+  "keywords": [
+    "telegram",
+    "bot",
+    "cycle",
+    "women",
+    "health"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^5.1.0",
+    "node-cron": "^3.0.3",
     "node-telegram-bot-api": "^0.66.0",
     "openai": "^4.20.1",
-    "sqlite3": "^5.1.6",
-    "node-cron": "^3.0.3",
-    "dotenv": "^16.3.1"
+    "sqlite3": "^5.1.6"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
