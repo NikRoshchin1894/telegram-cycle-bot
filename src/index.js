@@ -1048,7 +1048,15 @@ async function startBot() {
   try {
     console.log('🤖 Запуск бота...');
     
+    // Проверяем переменные окружения
+    if (!process.env.TELEGRAM_BOT_TOKEN) {
+      throw new Error('TELEGRAM_BOT_TOKEN не установлен!');
+    }
+    
+    console.log('✅ Токен бота найден');
+    
     // Запускаем polling
+    console.log('🔄 Запуск polling...');
     await bot.startPolling();
     console.log('✅ Polling запущен');
     
